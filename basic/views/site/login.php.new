@@ -1,0 +1,82 @@
+<?php
+use yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $form yii\bootstrap\ActiveForm */
+/* @var $model app\models\LoginForm */
+
+$this->title = 'Login';
+///$this->params['breadcrumbs'][] = $this->title;
+?>
+<html lang="<?= Yii::$app->language ?>">
+<head>
+    <meta charset="<?= Yii::$app->charset ?>"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-param" content="_csrf">
+    <title><?= Html::encode($this->title) ?></title>
+</head>
+
+<style>
+BODY{PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; FONT-FAMILY: "Arial"; BACKGROUND: url() #3c3c3c; COLOR: #222; FONT-SIZE: 13px; PADDING-TOP: 0px}
+.hide{DISPLAY: none}
+IMG{BORDER-BOTTOM: 0px; BORDER-LEFT: 0px; BORDER-TOP: 0px; BORDER-RIGHT: 0px}
+#logo{TEXT-ALIGN: center; PADDING-BOTTOM: 10px; MARGIN: 80px auto 0px; WIDTH: 247px}
+#login{BACKGROUND-IMAGE: url(/ducter/css/bg-login.png); PADDING-BOTTOM: 20px; MARGIN: 0px auto; PADDING-LEFT: 20px; WIDTH: 247px; PADDING-RIGHT: 20px; PADDING-TOP: 20px; border-radius: 4px 4px 4px 4px}
+#login FORM{PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-LEFT: 0px; PADDING-RIGHT: 0px; PADDING-TOP: 0px}
+#login P{MARGIN: 10px 0px}
+.control-group{MARGIN-BOTTOM: 10px}
+.control-group .icon-user{BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc 1px solid; PADDING-BOTTOM: 4px; LINE-HEIGHT: 20px; PADDING-LEFT: 5px; WIDTH: 16px; PADDING-RIGHT: 5px; DISPLAY: block; BACKGROUND: url(/ducter/css/bg-loginicons.png) -1px 0px; FLOAT: left; HEIGHT: 20px; OVERFLOW: hidden; BORDER-TOP: #cccccc 1px solid; MARGIN-RIGHT: -1px; BORDER-RIGHT: #cccccc 1px solid; PADDING-TOP: 4px; border-radius: 4px 0 0 4px}
+.control-group .icon-lock{BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc 1px solid; PADDING-BOTTOM: 4px; LINE-HEIGHT: 20px; PADDING-LEFT: 5px; WIDTH: 16px; PADDING-RIGHT: 5px; DISPLAY: block; BACKGROUND: url(/ducter/css/bg-loginicons.png) -1px 0px; FLOAT: left; HEIGHT: 20px; OVERFLOW: hidden; BORDER-TOP: #cccccc 1px solid; MARGIN-RIGHT: -1px; BORDER-RIGHT: #cccccc 1px solid; PADDING-TOP: 4px; border-radius: 4px 0 0 4px}
+.control-group .icon-mail{BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc 1px solid; PADDING-BOTTOM: 4px; LINE-HEIGHT: 20px; PADDING-LEFT: 5px; WIDTH: 16px; PADDING-RIGHT: 5px; DISPLAY: block; BACKGROUND: url(/ducter/css/bg-loginicons.png) -1px 0px; FLOAT: left; HEIGHT: 20px; OVERFLOW: hidden; BORDER-TOP: #cccccc 1px solid; MARGIN-RIGHT: -1px; BORDER-RIGHT: #cccccc 1px solid; PADDING-TOP: 4px; border-radius: 4px 0 0 4px}
+.control-group .icon-lock{BACKGROUND-POSITION: -30px 0px}
+.control-group .icon-mail{BACKGROUND-POSITION: -58px 0px}
+.control-group INPUT{BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc 1px solid; PADDING-BOTTOM: 4px; LINE-HEIGHT: 20px; BACKGROUND-COLOR: #ffffff; PADDING-LEFT: 6px; WIDTH: 206px; PADDING-RIGHT: 6px; DISPLAY: inline-block; FONT-FAMILY: "Helvetica Neue", Helvetica, Arial, sans-serif; MARGIN-BOTTOM: 10px; HEIGHT: 20px; COLOR: #555555; MARGIN-LEFT: 0px; FONT-SIZE: 14px; VERTICAL-ALIGN: middle; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px solid; PADDING-TOP: 4px; border-radius: 0 4px 4px 0; box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset; transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s}
+.control-group INPUT:focus{Z-INDEX: 2; OUTLINE-STYLE: dotted; OUTLINE-COLOR: invert; OUTLINE-WIDTH: thin; box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6); -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6); -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6)}
+.remember-me{MARGIN-TOP: 0px; DISPLAY: block; MARGIN-BOTTOM: 25px}
+.remember-me INPUT{VERTICAL-ALIGN: middle; CURSOR: pointer}
+.remember-me LABEL{FONT-SIZE: 13px; VERTICAL-ALIGN: middle; CURSOR: pointer}
+.remember-me A{FLOAT: right; COLOR: #333; TEXT-DECORATION: none; PADDING-TOP: 1px}
+.remember-me A:hover{BORDER-BOTTOM: #999 1px dashed; COLOR: #999; TEXT-DECORATION: none}
+.login-btn INPUT{BORDER-BOTTOM: 1px solid; BORDER-LEFT: 1px solid; PADDING-BOTTOM: 4px; LINE-HEIGHT: 20px; BACKGROUND-COLOR: #f56c06; MARGIN: 0px auto; PADDING-LEFT: 12px; WIDTH: 80px; PADDING-RIGHT: 12px; DISPLAY: block; BACKGROUND-REPEAT: repeat-x; COLOR: #ffffff; FONT-SIZE: 13px; BORDER-TOP: 1px solid; CURSOR: pointer; BORDER-RIGHT: 1px solid; PADDING-TOP: 4px; border-radius: 4px 4px 4px 4px; box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 2px rgba(0, 0, 0, 0.05); text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25)}
+.login-btn INPUT:hover{BACKGROUND-COLOR: #007500}
+.forget-btn{PADDING-TOP: 10px}
+#login-copyright{TEXT-ALIGN: center; PADDING-BOTTOM: 0px; MARGIN: 0px auto; PADDING-LEFT: 10px; WIDTH: 250px; PADDING-RIGHT: 10px; COLOR: #999999; FONT-SIZE: 11px; PADDING-TOP: 10px}
+#login-copyright A{COLOR: #999999; TEXT-DECORATION: none}
+#login-copyright A:hover{BORDER-BOTTOM: #fff 1px dashed; COLOR: #fff; TEXT-DECORATION: none}
+</style>
+
+<body>
+<DIV id=logo><IMG alt=HongCMS src="/ducter/css/logo-login.png"></DIV>
+<DIV id=login>
+
+    <?php $form = ActiveForm::begin([
+        'id' => 'login-form',
+        'options' => ['class' => 'wrapper',],
+        'fieldConfig' => [
+            'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
+            'labelOptions' => ['class' => 'col-lg-1 control-label'],
+        ],
+    ]); ?>
+<P id=info>请输入用户名和密码</P>
+
+<div class="form-group field-loginform-username required">
+<div class="control-group"><SPAN class=icon-user></SPAN><input type="text" id="loginform-username" class="form-control" name="LoginForm[username]"></div>
+<div class="col-lg-8"><p class="help-block help-block-error"></p></div>
+</div> 
+
+
+<div class="form-group field-loginform-password required">
+<div class="control-group"><SPAN class=icon-lock></SPAN><input type="password" id="loginform-password" class="form-control" name="LoginForm[password]"></div>
+<div class="col-lg-8"><p class="help-block help-block-error"></p></div>
+</div>    <br>
+
+   <?= $form->field($model, 'rememberMe', [
+        'template' => "<div class=\"col-lg-offset-1 col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
+    ])->checkbox() ?>
+
+<DIV class=login-btn><INPUT id=login-btn value="登 录" type=submit name=submit></DIV>
+    <?php ActiveForm::end(); ?>
+<DIV id=login-copyright>2015 Ducter <A href="/" target=_blank>www.ducter.net</A> </DIV>
+</body>
+</html>
