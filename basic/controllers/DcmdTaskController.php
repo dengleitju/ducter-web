@@ -115,6 +115,9 @@ class DcmdTaskController extends Controller
           $dcmd_task->app_id = $post_task['app_id'];
           $dcmd_task->app_name = $post_task['app_name'];
           $dcmd_task->svr_id = $post_task['svr_id'];
+          $dcmd_svr = DcmdService::findOne($post_task['svr_id']);
+          $dcmd_task->node_multi_pool = $dcmd_svr->node_multi_pool;
+          $dcmd_task->err_msg = " ";
           $dcmd_task->svr_name = $post_task['svr_name'];
           $dcmd_task->svr_path = $post_task['svr_path'];
           $dcmd_task->tag = $post_task['tag'];
@@ -270,6 +273,8 @@ class DcmdTaskController extends Controller
         $dcmd_svr = DcmdService::findOne($post_task['svr_id']);
         $dcmd_task->svr_name = $dcmd_svr->svr_name;/// $post_task['svr_name'];
         $dcmd_task->svr_path = $dcmd_svr->svr_path; ///$post_task['svr_path'];
+        $dcmd_task->node_multi_pool = $dcmd_svr->node_multi_pool;
+        $dcmd_task->err_msg = ' ';
         $dcmd_task->tag = $post_task['tag'];
         $dcmd_task->update_env = $post_task['update_env'];
         $dcmd_task->update_tag = $post_task['update_tag'];
@@ -533,8 +538,8 @@ class DcmdTaskController extends Controller
             $dcmd_task_node->ip = $ip;
             $dcmd_task_node->state = 0;
             $dcmd_task_node->ignored = 0;
-            $dcmd_task_node->start_time = 0;
-            $dcmd_task_node->finish_time = 0;
+            $dcmd_task_node->start_time = '0000-00-00 00:00:00';
+            $dcmd_task_node->finish_time = '0000-00-00 00:00:00';
             $dcmd_task_node->process = "0";
             $dcmd_task_node->err_msg = "NULL";
             $dcmd_task_node->utime = date('Y-m-d H:i:s');

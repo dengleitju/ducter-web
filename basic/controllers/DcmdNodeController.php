@@ -186,6 +186,12 @@ class DcmdNodeController extends Controller
          $model->ctime = $model->utime;
           $model->opr_uid = Yii::$app->user->getId();
          if ($model->save()) {
+           #发送消息给center
+           $query = DcmdCenter::findOne(['master'=>1]);
+           if($query) {
+             list($host, $port) = explode(':', $query["host"]);
+             agentValid($host, $port, $ip);
+           }
            $this->oprlog(1,"insert node:".$ip);
            Yii::$app->getSession()->setFlash('success', "添加成功");
            return $this->redirect(['dcmd-node/view', 'id' => $model->nid]);

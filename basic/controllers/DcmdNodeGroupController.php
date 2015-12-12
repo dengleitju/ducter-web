@@ -227,12 +227,12 @@ class DcmdNodeGroupController extends Controller
         return $this->redirect(['index']);
 
     }
-    public function actionImportNode($ngroup_id)
+    public function actionImportNode($ngroup_id=0)
     {
        $model = $this->findModel($ngroup_id);
        if (Yii::$app->request->post()) {
-         var_dump($_FILES); ;
-         var_dump(Yii::$app->request->post());exit;
+         //var_dump($_FILES); ;
+         ///var_dump(Yii::$app->request->post());exit;
          $err = "未提交数据文件!";
          if($_FILES['nfile']['error'] == 0 && $_FILES['nfile']['name'] != '') {
            $fname = $_FILES['nfile']['tmp_name'];

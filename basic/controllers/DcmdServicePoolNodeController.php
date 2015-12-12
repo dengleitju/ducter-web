@@ -158,10 +158,10 @@ class DcmdServicePoolNodeController extends Controller
        ]);
    }
 
-   public function actionShowNodeList() {
-        $app_id = Yii::$app->request->post()["app_id"];
-        $svr_id = Yii::$app->request->post()["svr_id"];
-        $svr_pool_id = Yii::$app->request->post()["svr_pool_id"];
+   public function actionShowNodeList($app_id, $svr_id, $svr_pool_id) {
+        #$app_id = Yii::$app->request->post()["app_id"];
+        #$svr_id = Yii::$app->request->post()["svr_id"];
+        #$svr_pool_id = Yii::$app->request->post()["svr_pool_id"];
         $model = DcmdApp::findOne($app_id);
         ///判断用户所属的系统组是否和该应用相同
         $query = DcmdUserGroup::findOne(['uid'=>Yii::$app->user->getId(), 'gid'=>$model['sa_gid']]);
@@ -183,13 +183,14 @@ class DcmdServicePoolNodeController extends Controller
         $ngroups = $ngroups." and nid not in (0";
         foreach($exist_nid as $k=>$v) $ngroups = $ngroups.",".$v;
         $ngroups = $ngroups.")";
-        $query = DcmdNode::find()->where($ngroups);
+        $query = DcmdNode::find()->where($ngroups)->orderBy('ip');
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [ 'pagesize' => 0],
         ]);
         $searchModel = new DcmdNodeSearch();
         return $this->render('show-node-list', [
-          'searchModel' => $searchModel,
+          #'searchModel' => $searchModel,
           'dataProvider' => $dataProvider,
           'app_id' => $app_id,
           'svr_id' => $svr_id,
