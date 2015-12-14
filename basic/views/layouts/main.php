@@ -32,7 +32,7 @@ AppAsset::register($this);
     <div class="wrap" >
         <?php
             NavBar::begin([
-                'brandLabel' => 'Ducter(V1.0.3)',
+                'brandLabel' => 'Ducter(V1.0.4)',
                 'brandUrl' => "#",///Yii::$app->homeUrl,
                 'options' => [
                     'class' => 'navbar-inverse navbar-fixed-top',
