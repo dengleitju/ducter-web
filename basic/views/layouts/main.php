@@ -107,8 +107,8 @@ AppAsset::register($this);
 
     <footer class="footer">
         <div class="container">
-            <p class="pull-left">&copy; Ducter(V1.0.3) <?= date('Y') ?></p>
-            <p class="pull-right">Ducter(V1.0.3)</p>
+            <p class="pull-left">&copy; Ducter(V1.0.4) <?= date('Y') ?></p>
+            <p class="pull-right">Ducter(V1.0.4)</p>
         </div>
     </footer>
 
