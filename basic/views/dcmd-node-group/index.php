@@ -33,6 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
         ]);
     }
     ?>
+    <p>
+        <?= Html::a('添加', ['create'], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?> &nbsp;&nbsp;
+        <?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?> 
+    </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -40,12 +44,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\CheckboxColumn'],
             array('attribute' => 'ngroup_name',  'label'=>'设备池', 'content'=>function($model, $key, $index, $column) {return Html::a($model['ngroup_name'], Url::to(['dcmd-node-group/view', 'id'=>$model['ngroup_id']]));}),
             array('attribute' => 'gid', 'content'=>function($model, $key, $index, $column) { return Html::a($model->getGname($model['gid']), Url::to(['dcmd-group/view', 'id'=>$model['gid']]));}, 'label' => '系统组', 'filter'=>$groupId),
-	['class' => 'yii\grid\ActionColumn',  "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
+	['class' => 'yii\grid\ActionColumn', 'template'=>'{delete}', "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
         ],
     ]); ?>
-    <p>
-        <?= Html::a('添加', ['create'], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?> &nbsp;&nbsp;
-        <?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-    </p>
+
 </div>
 </form>

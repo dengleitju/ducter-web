@@ -42,17 +42,13 @@ $this->params['breadcrumbs'][] = $this->title;
     d('dcmd-run-task').style.display='none';   
     d('dcmd-run-opr').style.display='none';    
     d('dcmd-os-info').style.display='none'; 
-    d('dcmd-os-user').style.display='none';
-    d('dcmd-unfinish-task').style.display='none';
-    d('dcmd-app').style.display='none'; 
+    d('dcmd-os-user').style.display='none'; 
     d(parm).style.display = '';    
     
     if(parm == 'dcmd-run-task') getRuningTask();
     if(parm == 'dcmd-run-opr') getRuningOpr(); 
     if(parm == 'dcmd-os-info') getOsInfo();
     if(parm == 'dcmd-os-user') getOsUser();
-    if(parm == 'dcmd-unfinish-task') getTask();
-    if(parm == 'dcmd-app') getApp();
     for(var i in d('ulMenu').getElementsByTagName('LI')){        
      d('ulMenu').getElementsByTagName('LI')[i].className = 'codeDemomouseOutMenu';    
     }
@@ -66,8 +62,6 @@ $this->params['breadcrumbs'][] = $this->title;
   <li class="codeDemomouseOutMenu" id="dcmd-run-opr-l" onclick="showDiv('dcmd-run-opr');this.className='codeDemomouseOnMenu'">在运行操作</li>
   <li class="codeDemomouseOutMenu" id="dcmd-os-info-1" onclick="showDiv('dcmd-os-info');this.className='codeDemomouseOnMenu'">系统信息</li>
   <li class="codeDemomouseOutMenu" id="dcmd-os-user-1" onclick="showDiv('dcmd-os-user');this.className='codeDemomouseOnMenu'">用户信息</li>
-  <li class="codeDemomouseOutMenu" id="dcmd-unfinish-task-l" onclick="showDiv('dcmd-unfinish-task'); this.className='codeDemomouseOnMenu'">未归档任务</li>
-  <li class="codeDemomouseOutMenu" id="dcmd-app-l" onclick="showDiv('dcmd-app');this.className='codeDemomouseOnMenu'">所属产品</li>
 </ul>
 
 <div class="dcmd-node-view" id="dcmd-node">
@@ -117,13 +111,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="dcmd-os-user-view" id="dcmd-os-user">
 </div>
-
-<div class="dcmd-unfinish-task" id="dcmd-unfinish-task">
-</div>
-
-<div class="dcmd-app" id="dcmd-app">
-
-</div>
 <script>
 var getRuningTask = function () {
          ip="<?php echo $model->ip; ?>";
@@ -160,22 +147,4 @@ var getOsUser = function () {
                                 } () : "";
                         }, "text");
 };
-
-var getTask = function() {
-   ip="<?php echo $model->ip; ?>";
-   $.get("?r=dcmd-node/task-list", { "ip":ip }, function (data, status) {
-       status == "success" ? function () {
-         $('#dcmd-unfinish-task').html(data);
-       } () : "";
-   }, "text");
-};
-
-var getApp = function() {
-   ip="<?php echo $model->ip; ?>";
-   $.get("?r=dcmd-node/app-list", { "ip":ip }, function (data, status) {
-       status == "success" ? function () {
-         $('#dcmd-app').html(data);
-       } () : "";
-   }, "text");
-}
 </script>

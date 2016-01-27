@@ -153,7 +153,7 @@ class DcmdTaskCmdController extends Controller
       $retcontent = array("md5"=>"",);
       
       if ($query) {
-          list($ip, $port) = explode(':', $query["host"]);
+          list($ip, $port) = split(':', $query["host"]);
           $reply = getTaskScriptInfo($ip, $port, $task_cmd);
           if ($reply->getState() == 0) {
             $this->saveScript($task_cmd, $reply->getScript());
@@ -183,7 +183,7 @@ class DcmdTaskCmdController extends Controller
       $query = DcmdCenter::findOne(['master'=>1]);
       $retContent = "";
       if ($query) {
-          list($ip, $port) = explode(':', $query["host"]);
+          list($ip, $port) = split(':', $query["host"]);
           $reply = getTaskScriptList($ip, $port, $prefix);
           if ($reply->getState() == 0) {
             foreach($reply->getScripts() as $item)

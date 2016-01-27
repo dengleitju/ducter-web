@@ -31,7 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
         ]);
     }
     ?>
-<div id="task-tmpate-view"  style="background:#f1f1f1;padding:10px;margin-top:10px">
+
+    <p>
+        <?= Html::a('修改', ['update', 'id' => $model->task_tmpt_id], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+    </p>
+
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -49,11 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'ctime:text:创建时间',
         ],
     ]) ?>
-    <p>
-        <?= Html::a('修改', ['update', 'id' => $model->task_tmpt_id], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-    </p>
-</div>
-    <div class="form-group field-dcmdtasktemplate-arg"  style="background:#f1f1f1;padding:10px;margin-top:10px">
+    <div class="form-group field-dcmdtasktemplate-arg">
     <label class="task_arg" for="dcmdtasktemplate-arg">任务脚本参数</label>
     <div id="taskTypeArgDiv" style="width:100%"></div>
     <?php echo $arg_content; ?>

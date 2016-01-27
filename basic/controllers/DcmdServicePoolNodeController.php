@@ -15,8 +15,6 @@ use app\models\DcmdNodeGroupSearch;
 use app\models\DcmdServicePoolNode;
 use app\models\DcmdServicePoolNodeSearch;
 use app\models\DcmdOprLog;
-use app\models\DcmdOprCmdSearch;
-use app\models\DcmdOprCmdRepeatExecSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -158,10 +156,10 @@ class DcmdServicePoolNodeController extends Controller
        ]);
    }
 
-   public function actionShowNodeList($app_id, $svr_id, $svr_pool_id) {
-        #$app_id = Yii::$app->request->post()["app_id"];
-        #$svr_id = Yii::$app->request->post()["svr_id"];
-        #$svr_pool_id = Yii::$app->request->post()["svr_pool_id"];
+   public function actionShowNodeList() {
+        $app_id = Yii::$app->request->post()["app_id"];
+        $svr_id = Yii::$app->request->post()["svr_id"];
+        $svr_pool_id = Yii::$app->request->post()["svr_pool_id"];
         $model = DcmdApp::findOne($app_id);
         ///判断用户所属的系统组是否和该应用相同
         $query = DcmdUserGroup::findOne(['uid'=>Yii::$app->user->getId(), 'gid'=>$model['sa_gid']]);
@@ -183,14 +181,13 @@ class DcmdServicePoolNodeController extends Controller
         $ngroups = $ngroups." and nid not in (0";
         foreach($exist_nid as $k=>$v) $ngroups = $ngroups.",".$v;
         $ngroups = $ngroups.")";
-        $query = DcmdNode::find()->where($ngroups)->orderBy('ip');
+        $query = DcmdNode::find()->where($ngroups);
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [ 'pagesize' => 0],
         ]);
         $searchModel = new DcmdNodeSearch();
         return $this->render('show-node-list', [
-          #'searchModel' => $searchModel,
+          'searchModel' => $searchModel,
           'dataProvider' => $dataProvider,
           'app_id' => $app_id,
           'svr_id' => $svr_id,
@@ -322,68 +319,6 @@ class DcmdServicePoolNodeController extends Controller
       }
       Yii::$app->getSession()->setFlash('success', $ret_msg);
       return $this->redirect(['index']);
-    }
-    public function actionOpr() {
-      if(!array_key_exists('selection', Yii::$app->request->post()) && !array_key_exists('ips', Yii::$app->request->post())) {
-        Yii::$app->getSession()->setFlash('error', '未选择设备!');
-        return $this->redirect(['index']);
-      }
-      $ips = "";
-      if(array_key_exists('selection', Yii::$app->request->post())) {
-        $select = Yii::$app->request->post()['selection'];
-        if(count($select) < 1) {
-          Yii::$app->getSession()->setFlash('error', '未选择设备!');
-          return $this->redirect(['index']);
-        }
-        $query = DcmdServicePoolNode::findAll($select);
-        $hv = array();
-        foreach($query as $item) {
-         if(in_array($item->ip, $hv)) continue;
-         $ips .= $item->ip.";";
-         array_push($hv, $item->ip);
-        }
-      }else $ips = Yii::$app->request->post()['ips'];
-      ///获取操作列表
-      $searchModel = new DcmdOprCmdSearch();
-      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-      return $this->render('opr', [
-          'searchModel' => $searchModel,
-          'dataProvider' => $dataProvider,
-          'ips' => $ips,
-      ]);
-    }
-
-    public function actionRepeatOpr() {
-      if(!array_key_exists('selection', Yii::$app->request->post()) && !array_key_exists('ips', Yii::$app->request->post())) {
-        Yii::$app->getSession()->setFlash('error', '未选择设备!');
-        return $this->redirect(['index']);
-      }
-      $ips = "";
-      if(array_key_exists('selection', Yii::$app->request->post())) {
-        $select = Yii::$app->request->post()['selection'];
-        if(count($select) < 1) {
-          Yii::$app->getSession()->setFlash('error', '未选择设备!');
-          return $this->redirect(['index']);
-        }
-        $query = DcmdServicePoolNode::findAll($select);
-        $hv = array();
-        foreach($query as $item) {
-         if(in_array($item->ip, $hv)) continue;
-         $ips .= $item->ip.";";
-         array_push($hv, $item->ip);
-        }
-      }else $ips = Yii::$app->request->post()['ips'];
-      ///IP可替换的重复操作
-      $params = array("DcmdOprCmdRepeatExecSearch"=>array("ip_mutable"=>1));
-      $searchModel = new DcmdOprCmdRepeatExecSearch();
-      $dataProvider = $searchModel->search($params);
-
-      return $this->render('repeat_opr', [
-          'searchModel' => $searchModel,
-          'dataProvider' => $dataProvider,
-          'ips' => $ips,
-      ]);
     }
     /**
      * Finds the DcmdServicePoolNode model based on its primary key value.

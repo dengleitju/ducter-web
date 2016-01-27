@@ -10,12 +10,6 @@ use app\models\DcmdUserGroup;
 use app\models\DcmdNodeSearch;
 use app\models\DcmdCenter;
 use app\models\DcmdOprLog;
-use app\models\DcmdTaskNode;
-use app\models\DcmdTask;
-use app\models\DcmdApp;
-use app\models\DcmdService;
-use app\models\DcmdOprCmdSearch;
-use app\models\DcmdOprCmdRepeatExecSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -97,7 +91,7 @@ class DcmdNodeController extends Controller
         $ret_msg = '<table class="table table-striped table-bordered"><tbody>';
         $ret_msg .="<tr><td>服务</td><td>服务池</td><td>任务名</td><td>subtask_id</td></tr>";
         if ($query) {
-          list($host, $port) = explode(':', $query["host"]);
+          list($host, $port) = split(':', $query["host"]);
           $reply = getRunningTask($host, $port, $ip);
           if ($reply->getState() == 0) {
             $subtaskInfo = $reply->getResult();
@@ -122,7 +116,7 @@ class DcmdNodeController extends Controller
         $ret_msg = '<table class="table table-striped table-bordered"><tbody>';
         $ret_msg .="<tr><td>操作名</td><td>开始时间</td><td>运行时间</td></tr>";
         if ($query) {
-          list($host, $port) = explode(':', $query["host"]);
+          list($host, $port) = split(':', $query["host"]);
           $reply = getRunningOpr($host, $port, $ip);
           if ($reply->getState() == 0) {
             $oprInfo = $reply->getResult();
@@ -163,6 +157,12 @@ class DcmdNodeController extends Controller
           if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $this->oprlog(1,"insert ip:".$model->ip);
             Yii::$app->getSession()->setFlash('success',"添加成功");
+           $query = DcmdCenter::findOne(['master'=>1]);
+           if ($query) {
+             list($host, $port) = split(':', $query["host"]);
+             $reply = agentValid($host, $port, $model->ip);
+             # Yii::$app->getSession()->setFlash('success', $reply);
+           }
             return $this->redirect(['view', 'id' => $model->nid]);
           }
           $err_str = "";
@@ -186,14 +186,14 @@ class DcmdNodeController extends Controller
          $model->ctime = $model->utime;
           $model->opr_uid = Yii::$app->user->getId();
          if ($model->save()) {
-           #发送消息给center
-           $query = DcmdCenter::findOne(['master'=>1]);
-           if($query) {
-             list($host, $port) = explode(':', $query["host"]);
-             agentValid($host, $port, $ip);
-           }
            $this->oprlog(1,"insert node:".$ip);
            Yii::$app->getSession()->setFlash('success', "添加成功");
+           /*$query = DcmdCenter::findOne(['master'=>1]);
+           if ($query) {
+             list($host, $port) = split(':', $query["host"]);
+             $reply = agentValid($host, $port, $ip);
+              Yii::$app->getSession()->setFlash('success', $reply);
+           }*/
            return $this->redirect(['dcmd-node/view', 'id' => $model->nid]);
          }else 
             Yii::$app->getSession()->setFlash('error', '添加失败');
@@ -332,58 +332,6 @@ class DcmdNodeController extends Controller
       } 
       return $this->render('select_group', ['ips_info'=>$ips_info, 'ids'=>$ids, 'node_group'=>$node_group]);
     }
-    public function actionOpr()
-    {
-      if(!array_key_exists('selection', Yii::$app->request->post()) && !array_key_exists('ips', Yii::$app->request->post())) {
-        Yii::$app->getSession()->setFlash('error', '未选择设备!');
-        return $this->redirect(['index']);
-      }
-      $ips = "";
-      if(array_key_exists('selection', Yii::$app->request->post())) {
-        $select = Yii::$app->request->post()['selection'];
-        if(count($select) < 1) {
-          Yii::$app->getSession()->setFlash('error', '未选择设备!');
-          return $this->redirect(['index']);
-        }
-        $query = DcmdNode::findAll($select);
-        foreach($query as $item) $ips .= $item->ip.";";
-      }else $ips = Yii::$app->request->post()['ips'];
-      ///获取操作列表
-      $searchModel = new DcmdOprCmdSearch();
-      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-      return $this->render('opr', [
-          'searchModel' => $searchModel,
-          'dataProvider' => $dataProvider,
-          'ips' => $ips,
-      ]);
-
-    }
-    public function actionRepeatOpr()
-    {
-      if(!array_key_exists('selection', Yii::$app->request->post())) {
-        Yii::$app->getSession()->setFlash('error', '未选择设备!');
-        return $this->redirect(['index']);
-      }
-      $ips = "";
-      $select = Yii::$app->request->post()['selection'];
-      if(count($select) < 1) {
-        Yii::$app->getSession()->setFlash('error', '未选择设备!');
-        return $this->redirect(['index']);
-      }
-      $query = DcmdNode::findAll($select);
-      foreach($query as $item) $ips .= $item->ip.";";
-      ///IP可替换的重复操作
-      $params = array("DcmdOprCmdRepeatExecSearch"=>array("ip_mutable"=>1));
-      $searchModel = new DcmdOprCmdRepeatExecSearch();
-      $dataProvider = $searchModel->search($params);
-
-      return $this->render('repeat_opr', [
-          'searchModel' => $searchModel,
-          'dataProvider' => $dataProvider,
-          'ips' => $ips,
-      ]);
-    }
     public function actionChangeNodeGroup()
     {
       $ngroup_id = Yii::$app->request->post()['ngroup_id'];
@@ -417,61 +365,6 @@ class DcmdNodeController extends Controller
       Yii::$app->getSession()->setFlash('success', $ret_msg);
       return $this->redirect(['index']);
     }
-    ///获取未归档任务
-    public function actionTaskList($ip)
-    {
-      $ret_msg = '<table class="table table-striped table-bordered"><tbody>';
-      $ret_msg .= "<tr><td>任务名称</td><td>脚本名称</td><td>产品名称</td><td>创建时间</td>";
-      ///获取任务列表
-      $query = DcmdTaskNode::findAll(['ip'=>$ip]);
-      if($query) {
-        $task_id = "task_id in (0";
-        foreach($query as $item) $task_id .= ",".$item->task_id; 
-        $task_id .=")";
-        ///获取任务信息
-        $query = DcmdTask::find()->andWhere($task_id)->orderBy('task_id desc')->all();
-        if($query) {
-          foreach($query as $task) {
-            $ret_msg .= "<tr><td><a href='index.php?r=dcmd-task-async/monitor-task&task_id=".$task->task_id."' target=_blank>".$task->task_name."</a></td>";
-            $ret_msg .= "<td>".$task->task_cmd."</td>";
-            $ret_msg .= "<td>".$task->app_name."</td>";
-            $ret_msg .= "<td>".$task->ctime."</td>";
-            $ret_msg .= "</tr>";
-          }
-        }
-      }
-      $ret_msg .= "</tbody></table>";
-      echo $ret_msg;
-    }
-    ///获取服务器对应产品
-    public function actionAppList($ip)
-    {
-      $ret_msg = '<table class="table table-striped table-bordered"><tbody>';
-      $ret_msg .= "<tr><td>产品</td><td>产品别名</td><td>服务</td><td>服务池</td></tr>";
-      $connection = Yii::$app->db;
-      ///$command = $connection->createCommand('SELECT * FROM dcmd_app');
-      ///$posts = $command->queryAll();
-      //从服务池获取该机器对应的服务列表
-      $query = DcmdServicePoolNode::findAll(['ip'=>$ip]);
-      if($query) {
-        $svr_id = "dcmd_service_pool.svr_id in (0";
-        foreach($query as $svr_node) $svr_id .=",".$svr_node->svr_id;
-        $svr_id .= ")";
-        $sql = "select dcmd_app.app_name, dcmd_app.app_id, dcmd_app.app_alias, dcmd_service.svr_name, dcmd_service.svr_id, dcmd_service_pool.svr_pool , dcmd_service_pool.svr_pool_id from  dcmd_app inner join  dcmd_service on dcmd_app.app_id = dcmd_service.app_id inner join  dcmd_service_pool on dcmd_service.svr_id = dcmd_service_pool.svr_id where  ".$svr_id;
-        $command = $connection->createCommand($sql);
-        $data = $command->queryAll();
-        if($data) {
-         foreach($data as $k=>$v) {
-           $ret_msg .="<tr><td><a href='index.php?r=dcmd-app/view&id=".$v['app_id']."' target=_blank>".$v['app_name']."</a></td>";
-           $ret_msg .="<td>".$v['app_alias']."</td>";
-           $ret_msg .="<td><a href='index.php?r=dcmd-service/view&id=".$v['svr_id']."' target=_blank>".$v['svr_name']."</a></td>";
-           $ret_msg .="<td><a href='index.php?r=dcmd-service-pool/view&id=".$v['svr_pool_id']."' target=_blank>".$v['svr_pool']."</a></td></tr>";
-         }
-        }
-      }
-      $ret_msg .= "</tbody></table>";
-      echo $ret_msg;
-    }
     ///获取os用户
     public function actionOsUser($ip)
     {
@@ -479,7 +372,7 @@ class DcmdNodeController extends Controller
        $ret_msg = '<table class="table table-striped table-bordered"><tbody>';  
        $ret_msg .="<tr><td>用户名</td></tr>";
        if($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execRepeatOprCmd($host, $port, "get_host_user", array("include_sys_user"=>0), array($ip));
          if ($reply->getState() == 0) {
            foreach($reply->getResult() as $agent) {
@@ -503,7 +396,7 @@ class DcmdNodeController extends Controller
        $query = DcmdCenter::findOne(['master'=>1]);
        $ret_msg = "";
        if($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execRepeatOprCmd($host, $port, "os_info", array(), array($ip));
          if ($reply->getState() == 0) {
             foreach($reply->getResult() as $agent) {
@@ -578,7 +471,7 @@ class DcmdNodeController extends Controller
       $query = DcmdCenter::findOne(['master'=>1]);
       $retcontent = array("hostname"=>"",);
       if ($query) {
-          list($ip, $port) = explode(':', $query["host"]);
+          list($ip, $port) = split(':', $query["host"]);
           $reply = getAgentHostName($ip, $port, $agent_ip);
           if ($reply->getState() == 0 && $reply->getIsExist() == true) {
             $retContent["hostname"] = $reply->getHostname();

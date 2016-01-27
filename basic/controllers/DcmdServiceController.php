@@ -13,7 +13,6 @@ use app\models\DcmdServiceArchDiagramSearch;
 use app\models\DcmdServiceArchDiagram;
 use app\models\DcmdServicePoolNode;
 use app\models\DcmdOprLog;
-use app\models\DcmdTaskTemplateSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -94,16 +93,11 @@ class DcmdServiceController extends Controller
         }
         $imageSearch = new DcmdServiceArchDiagramSearch();
         $imageProvider = $imageSearch->search(array('DcmdServiceArchDiagramSearch'=>array('app_id'=>$service->app_id, 'svr_id'=>$id)));
-        ///获取任务模版列表
-        $tmpt_searchModel = new DcmdTaskTemplateSearch();
-        $params["DcmdTaskTemplateSearch"]["svr_id"] = $id;
-        $taskTemptDataProvider = $tmpt_searchModel->search($params, 1000);
         return $this->render('view', [
             'model' => $this->findModel($id),
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'imageProvider' => $imageProvider,
-            'taskTemptDataProvider' => $taskTemptDataProvider,
         ]);
     }
 

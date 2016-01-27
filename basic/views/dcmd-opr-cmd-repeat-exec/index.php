@@ -30,6 +30,11 @@ $this->params['breadcrumbs'][] = $this->title;
     }
    ?>
 <div class="dcmd-opr-cmd-repeat-exec-index">
+
+    <p>
+        <?= Html::a('添加', ['create'], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+    </p>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -40,10 +45,8 @@ $this->params['breadcrumbs'][] = $this->title;
             array('attribute'=>'ip_mutable', 'label'=>'主机可修改','enableSorting'=>false, 'filter'=>false, 'content'=>function($model, $key, $index, $col) { if($model['ip_mutable'] == 1) return "是"; return "否";}),
             array('attribute'=>'run_user', 'label'=>'运行用户', 'enableSorting'=>false, 'filter'=>false,),
 
-            ['class' => 'yii\grid\ActionColumn',  "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
+            ['class' => 'yii\grid\ActionColumn', 'template'=>'{delete}', "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
         ],
     ]); ?>
-    <p>
-     <?= Html::a('添加', ['create'], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-    </p>
+
 </div>

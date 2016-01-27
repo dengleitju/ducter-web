@@ -115,9 +115,6 @@ class DcmdTaskController extends Controller
           $dcmd_task->app_id = $post_task['app_id'];
           $dcmd_task->app_name = $post_task['app_name'];
           $dcmd_task->svr_id = $post_task['svr_id'];
-          $dcmd_svr = DcmdService::findOne($post_task['svr_id']);
-          $dcmd_task->node_multi_pool = $dcmd_svr->node_multi_pool;
-          $dcmd_task->err_msg = " ";
           $dcmd_task->svr_name = $post_task['svr_name'];
           $dcmd_task->svr_path = $post_task['svr_path'];
           $dcmd_task->tag = $post_task['tag'];
@@ -256,142 +253,7 @@ class DcmdTaskController extends Controller
                  'task_cmd_prv' => $task_cmd_prv,
              ]);
     }
-    ///使用任务脚本创建任务
-    public function actionCreateByCmd($task_cmd_id) {
-      if (Yii::$app->request->post()) { ///提交新建任务
-        #var_dump(Yii::$app->request->post()); exit ;
-        $dcmd_task = new DcmdTask();
-        $post_task = Yii::$app->request->post()['DcmdTask'];
-        $dcmd_task->task_name = Yii::$app->request->post()['task_cmd_prv'].'-'.$post_task['task_name'];
-        $dcmd_task->task_cmd  = $post_task['task_cmd'];
-        $dcmd_task->depend_task_id = 0;
-        $dcmd_task->depend_task_name = "NULL";
-        $dcmd_task->app_id = $post_task['app_id'];
-        $dcmd_app = DcmdApp::findOne($post_task['app_id']);
-        $dcmd_task->app_name = $dcmd_app->app_name;
-        $dcmd_task->svr_id = $post_task['svr_id'];
-        $dcmd_svr = DcmdService::findOne($post_task['svr_id']);
-        $dcmd_task->svr_name = $dcmd_svr->svr_name;/// $post_task['svr_name'];
-        $dcmd_task->svr_path = $dcmd_svr->svr_path; ///$post_task['svr_path'];
-        $dcmd_task->node_multi_pool = $dcmd_svr->node_multi_pool;
-        $dcmd_task->err_msg = ' ';
-        $dcmd_task->tag = $post_task['tag'];
-        $dcmd_task->update_env = $post_task['update_env'];
-        $dcmd_task->update_tag = $post_task['update_tag'];
-        $dcmd_task->state = 0;
-        $dcmd_task->freeze = 0;
-        $dcmd_task->valid = 1;
-        $dcmd_task->pause = 0;
-        $dcmd_task->concurrent_rate = $post_task['concurrent_rate'];
-        $dcmd_task->timeout = $post_task['timeout'];
-        $dcmd_task->auto = $post_task['auto'];
-        $dcmd_task->process = $post_task['process'];
-        $dcmd_task->utime =  date('Y-m-d H:i:s');
-        $dcmd_task->ctime = $dcmd_task->utime;
-        $dcmd_task->opr_uid = Yii::$app->user->getId();
-        $dcmd_task->comment = $post_task['comment'];
-        $arg = array();
-        $opr_log = new DcmdOprLog();
-        $opr_log->log_table = "dcmd_task";
-        $opr_log->opr_type = 1;
-        $opr_log->sql_statement = "insert task:".$dcmd_task->task_name;
-        $opr_log->ctime = date('Y-m-d H:i:s');
-        $opr_log->opr_uid = Yii::$app->user->getId();
-        $opr_log->save();
-        foreach(Yii::$app->request->post() as $k=>$v) {
-          if(substr($k,0,3) == "Arg") $arg[substr($k,3)] = $v;
-        }
-        $dcmd_task->task_arg = arrToXml($arg);  
-        if($dcmd_task->save()) {
-          ///设备池默认属性
-          $svr_pool_attr_def = array();
-          $tmp_query = DcmdServicePoolAttrDef::find()->asArray()->all();
-          foreach($tmp_query as $item) $svr_pool_attr_def[$item['attr_name']] = $item['def_value'];
-          ///保存服务池子信息
-          if (array_key_exists("selection", Yii::$app->request->post())) {
-             $svr_pool = Yii::$app->request->post()["selection"];
-             foreach($svr_pool as $k=>$svr_pool_id) {
-             $svr_query = DcmdService::findOne($dcmd_task->svr_id);
-             $svr_pool_query = DcmdServicePool::findOne($svr_pool_id);
-             $svr_pool_node_query = DcmdServicePoolNode::find()->andWhere(['svr_pool_id'=>$svr_pool_id])->asArray()->all();
-             $dcmd_task_service_pool = new DcmdTaskServicePool();
-             $dcmd_task_service_pool->task_id = $dcmd_task->task_id;
-             $dcmd_task_service_pool->task_cmd = $dcmd_task->task_cmd;
-             $dcmd_task_service_pool->svr_pool = $svr_pool_query['svr_pool'];
-             $dcmd_task_service_pool->svr_pool_id = $svr_pool_id;
-             $dcmd_task_service_pool->env_ver = $svr_pool_query['env_ver'];
-             $dcmd_task_service_pool->repo = $svr_pool_query['repo'];
-             $dcmd_task_service_pool->run_user = $svr_query['run_user'];
-             $dcmd_task_service_pool->undo_node = count($svr_pool_node_query);
-             $dcmd_task_service_pool->doing_node = 0;
-             $dcmd_task_service_pool->finish_node = 0;
-             $dcmd_task_service_pool->fail_node = 0;
-             $dcmd_task_service_pool->ignored_fail_node = 0;
-             $dcmd_task_service_pool->ignored_doing_node = 0;
-             $dcmd_task_service_pool->state = 0;
-             $dcmd_task_service_pool->utime = date('Y-m-d H:i:s');
-             $dcmd_task_service_pool->ctime = $dcmd_task_service_pool->utime;
-             $dcmd_task_service_pool->opr_uid = Yii::$app->user->getId();
-             if(!$dcmd_task_service_pool->save()) Yii::$app->getSession()->setFlash('error', "保存服务池子失败");
-             else {
-                $tm =  date('Y-m-d H:i:s');
-                ///保存服务池属性
-                $svr_pool_attr = array();
-                $tmp_query =  DcmdServicePoolAttr::find()->andWhere(['svr_pool_id'=>$svr_pool_id])->asArray()->all();
-                foreach($tmp_query as $item) $svr_pool_attr[$item['attr_name']] = $item['attr_value'];
-                foreach($svr_pool_attr_def as $name=>$value) {
-                  $dcmd_task_service_pool_attr = new DcmdTaskServicePoolAttr();
-                  $dcmd_task_service_pool_attr->task_id = $dcmd_task->task_id;
-                  $dcmd_task_service_pool_attr->app_id = $dcmd_task->app_id;
-                  $dcmd_task_service_pool_attr->svr_id = $dcmd_task->svr_id;
-                  $dcmd_task_service_pool_attr->svr_pool_id = $svr_pool_id;
-                  $dcmd_task_service_pool_attr->attr_name = $name;
-                  if(array_key_exists($name, $svr_pool_attr)) $dcmd_task_service_pool_attr->attr_value = $svr_pool_attr[$name];
-                  else $dcmd_task_service_pool_attr->attr_value = $value;
-                   $dcmd_task_service_pool_attr->utime = $tm;
-                   $dcmd_task_service_pool_attr->ctime = $tm;
-                   $dcmd_task_service_pool_attr->opr_uid = Yii::$app->user->getId();
-                   $dcmd_task_service_pool_attr->save();
-               }
-             }
-           }
-         }
-        } 
-        ///选择服务池子
-        return $this->redirect(array('select-service-pool-node','task_id'=>$dcmd_task->task_id));;
-      }else { ///添加新任务
-        ///获取改用户可以操作的产品列表
-        $group = "select app_id, app_name from dcmd_app where ";
-        $query = DcmdUserGroup::find()->andWhere(['uid'=>Yii::$app->user->getId()])->all();
-        if(Yii::$app->user->getIdentity()->admin == 1) {
-          $group .= " sa_gid in (0";
-        }else{
-          $group .= " svr_gid in (0";
-        } 
-        if($query) 
-          foreach($query as $item) $group .= ",".$item->gid;
-        $group .= ")";
-        $query = DcmdApp::findBySql($group)->all();
-        $app = array(""=>"");
-        if($query) {
-         foreach($query as $item) $app[$item->app_id] = $item->app_name;
-        }
-        $task_cmd = DcmdTaskCmd::findOne($task_cmd_id);
-        $model = new DcmdTask();
-        $model->depend_task_id = 0;
-        $model->depend_task_name = "";
-        $model->task_cmd = $task_cmd->task_cmd;
-        $task_cmd_prv  = $task_cmd->ui_name.'-'.date("YmdHis");
-        $args = $this->showTaskArg(arrToXml(array()), $task_cmd_id);
-        return $this->render('create_by_cmd', [
-                 'model' => $model,
-                 'app' => $app, 
-                 'task_cmd_prv' => $task_cmd_prv,
-                 'args' => $args,
-             ]);
-      }
-      echo "未知错误!"; exit ;
-    }
+
     private function showTaskArg($arg_xml, $task_cmd_id)
     {
        $content = "";
@@ -538,8 +400,8 @@ class DcmdTaskController extends Controller
             $dcmd_task_node->ip = $ip;
             $dcmd_task_node->state = 0;
             $dcmd_task_node->ignored = 0;
-            $dcmd_task_node->start_time = '0000-00-00 00:00:00';
-            $dcmd_task_node->finish_time = '0000-00-00 00:00:00';
+            $dcmd_task_node->start_time = 0;
+            $dcmd_task_node->finish_time = 0;
             $dcmd_task_node->process = "0";
             $dcmd_task_node->err_msg = "NULL";
             $dcmd_task_node->utime = date('Y-m-d H:i:s');
@@ -561,7 +423,7 @@ class DcmdTaskController extends Controller
          $task_ids = Yii::$app->request->post()['selection'];
          $query = DcmdCenter::findOne(['master'=>1]);
          if ($query) {
-           list($host, $port) = explode(':', $query["host"]);
+           list($host, $port) = split(':', $query["host"]);
            foreach($task_ids as $tid) {
              $task = $this->findModel($tid);
              if(Yii::$app->user->getIdentity()->admin != 1 && $task->opr_uid != Yii::$app->user->getId()) {
@@ -582,15 +444,6 @@ class DcmdTaskController extends Controller
        if($suc_msg != "")Yii::$app->getSession()->setFlash('success', $suc_msg);
        if($err_msg != "")Yii::$app->getSession()->setFlash('error', $err_msg);
        $this->redirect(array('index'));  
-    }
-    public function actionGetServicePool($svr_id) {
-      #return '<tr data-key="15"><td><input type="checkbox" name="selection[]" checked value="15"></td><td>ducter_agent_qcloud1111</td><td>r1.1</td></tr>';
-      $query = DcmdServicePool::find()->andWhere(['svr_id'=>$svr_id])->all();
-      $content = "";
-      foreach($query as $item) {
-        $content .= '<tr><td><input type="checkbox" name="selection[]" checked value="'.$item->svr_pool_id.'"></td><td>'.$item->svr_pool."</td><td>".$item->env_ver.'</td></tr>';
-      }
-      return $content;
     }
     /**
      * Finds the DcmdTask model based on its primary key value.

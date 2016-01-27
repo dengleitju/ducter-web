@@ -14,7 +14,7 @@ use app\models\DcmdNodeGroupAttrDef;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-require(dirname(__FILE__)."/../common/dcmd_util_func.php");
+
 /**
  * DcmdNodeGroupController implements the CRUD actions for DcmdNodeGroup model.
  */
@@ -227,81 +227,7 @@ class DcmdNodeGroupController extends Controller
         return $this->redirect(['index']);
 
     }
-    public function actionImportNode($ngroup_id=0)
-    {
-       $model = $this->findModel($ngroup_id);
-       if (Yii::$app->request->post()) {
-         //var_dump($_FILES); ;
-         ///var_dump(Yii::$app->request->post());exit;
-         $err = "未提交数据文件!";
-         if($_FILES['nfile']['error'] == 0 && $_FILES['nfile']['name'] != '') {
-           $fname = $_FILES['nfile']['tmp_name'];
-           if(file_exists($fname)) {
-             $name = $_FILES['nfile']['name'];
-             $prex = substr($name, strpos($name, "."));
-             if(strcasecmp($prex, ".txt") == 0 || strcasecmp($prex, ".txt") == 0) { ///excel格式
-               $err = importNodeTxt($fname);
-             } 
-             $err = "未知后缀名$prex!";
-           } 
-         }
-         Yii::$app->getSession()->setFlash('error', $err);
-       }
-       return $this->render('import_node', [
-            'model' => $model,
-        ]);
- 
-       
-    }
-    private function importNodeTxt($fnamei, $ngroup_id) {
-      $fd = fopen($fname, "r");
-      $msg = "";
-      if($fd) {
-        while(!feof($fd)) {
-          $line = fgets($fd);
-          $ar = explode(" ",$line);
-          if(count($ar) != 21) $msg .= "<font color=red>$line: 格式非法!</font><br>";
-          else {
-            $node = new DcmdNode();
-            $node->ip = $ar[0];
-            $node->ngroup_id = $ngroup_id;
-            $node->host = $ar[1];
-            $node->sid = $ar[2];
-            $node->did = $ar[3];
-            $node->os_type = $ar[4];
-            $node->os_ver = $ar[5];
-            $node->band_ip = $ar[6];
-            $node->public_ip = $ar[7];
-            $node->mach_room = $var[8];
-            $node->rack = $var[9];
-            $node->seat = $var[10];
-            $node->online_time = $var[11];
-            $node->server_brand = $var[12];
-            $node->server_model = $var[13];
-            $node->cpu = $var[14];
-            $node->memory = $var[15];
-            $node->disk = $var[16];
-            $node->purchase_time = $var[17];
-            $node->maintain_time = $var[18];
-            $node->maintain_fac = $var[19];
-            $node->comment = $var[20];
-            $node->utime = date('Y-m-d H:i:s');
-            $node->ctime = $model->utime;
-            $node->opr_uid = Yii::$app->user->getId();
-            if($node->save()) $msg .= "$line: 添加成功!<br>";
-            else {
-              $err_str = "";
-              foreach($model->getErrors() as $k=>$v) $err_str.=$k.":".$v[0]."<br>";
-              $msg .="<font color=red>$line :添加失败: $err_str</font><br>";
-            }
-          }
-        }
-      }else {
-        $msg = "打开文件失败";
-      }
-      return $msg;
-    }
-   /**
+    /**
      * Finds the DcmdNodeGroup model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id

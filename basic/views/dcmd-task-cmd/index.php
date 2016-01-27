@@ -33,6 +33,9 @@ $this->params['breadcrumbs'][] = $this->title;
         ]);
     }
     ?>
+    <p>
+        <?= Html::a('添加', ['create'], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -43,10 +46,8 @@ $this->params['breadcrumbs'][] = $this->title;
             array('attribute'=>'task_cmd', 'label'=>"脚本名称", 'content'=>function($model, $key, $index, $column){ return Html::a($model['task_cmd'], Url::to(['view', 'id'=>$model['task_cmd_id']]));}),
             array('attribute'=>'script_md5', 'label'=>"MD5",'enableSorting'=>false, 'filter'=>false),
 
-            ['class' => 'yii\grid\ActionColumn',"visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
+            ['class' => 'yii\grid\ActionColumn','template'=>'{delete}',"visible"=>(Yii::$app->user->getIdentity()->admin == 1 && Yii::$app->user->getIdentity()->sa == 1) ? true : false],
         ],
     ]); ?>
-    <p>
-        <?= Html::a('添加', ['create'], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-    </p>
+
 </div>

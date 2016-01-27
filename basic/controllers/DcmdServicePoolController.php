@@ -13,8 +13,6 @@ use app\models\DcmdServicePoolNodeSearch;
 use app\models\DcmdServicePoolAttr;
 use app\models\DcmdServicePoolAttrDef;
 use app\models\DcmdOprLog;
-use app\models\DcmdOprCmdSearch;
-use app\models\DcmdOprCmdRepeatExecSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -125,7 +123,6 @@ class DcmdServicePoolController extends Controller
         $attr_str .= "</tbody></table></div>";
 
         return $this->render('view', [
-            'svr_pool_id' => $id,
             'model' => $this->findModel($id),
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -273,49 +270,6 @@ class DcmdServicePoolController extends Controller
       if($suc_msg != "") Yii::$app->getSession()->setFlash('success', $suc_msg);
       if($err_msg != "") Yii::$app->getSession()->setFlash('error', $err_msg);
       return $this->redirect(['index']);
-    }
-    public function actionOpr($svr_pool_id) {
-      $ips = $this->getSvrPoolNode($svr_pool_id);
-      if($ips == "") {
-        Yii::$app->getSession()->setFlash('error', '未选择设备!');
-        return $this->redirect(['index']);
-      }
-      ///获取操作列表
-      $searchModel = new DcmdOprCmdSearch();
-      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-      return $this->render('opr', [
-          'searchModel' => $searchModel,
-          'dataProvider' => $dataProvider,
-          'ips' => $ips,
-      ]);
-    }
-
-    public function actionRepeatOpr($svr_pool_id) {
-      $ips = $this->getSvrPoolNode($svr_pool_id);
-      if($ips == "") {
-        Yii::$app->getSession()->setFlash('error', '未选择设备!');
-        return $this->redirect(['index']);
-      }
-      ///IP可替换的重复操作
-      $params = array("DcmdOprCmdRepeatExecSearch"=>array("ip_mutable"=>1));
-      $searchModel = new DcmdOprCmdRepeatExecSearch();
-      $dataProvider = $searchModel->search($params);
-
-      return $this->render('repeat_opr', [
-          'searchModel' => $searchModel,
-          'dataProvider' => $dataProvider,
-          'ips' => $ips,
-      ]);
-    }
-
-    protected function getSvrPoolNode($id) {
-      $query = DcmdServicePoolNode::find()->where(['svr_pool_id'=>$id])->all();
-      $ips = "";
-      if($query) {  
-        foreach($query as $item) $ips .= $item->ip.";";
-      }
-      return $ips;
     }
     /**
      * Finds the DcmdServicePool model based on its primary key value.

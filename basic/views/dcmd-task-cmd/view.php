@@ -13,6 +13,7 @@ $this->title = $model->ui_name;
 $this->params['breadcrumbs'][] = ['label' => '任务脚本', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<div class="dcmd-task-cmd-view">
     <?php
     if( Yii::$app->getSession()->hasFlash('success') ) {
         echo Alert::widget([
@@ -31,7 +32,16 @@ $this->params['breadcrumbs'][] = $this->title;
         ]);
     }
     ?>
-   <div style="background:#f1f1f1;padding:10px;margin-top:10px">
+    <p>
+        <?= Html::a('修改', ['update', 'id' => $model->task_cmd_id], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+        <!--<?= Html::a('Delete', ['delete', 'id' => $model->task_cmd_id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this item?',
+                'method' => 'post',
+            ],
+        ]) ?>-->
+    </p>
 
     <?= DetailView::widget([
         'model' => $model,
@@ -43,11 +53,9 @@ $this->params['breadcrumbs'][] = $this->title;
             array('attribute'=>'comment', 'label'=>'说明'),
         ],
     ]) ?>
-    <p>
-        <?= Html::a('修改', ['update', 'id' => $model->task_cmd_id], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-    </p>
-    </div>
-<div id="dcmd-task-cmd-arg"  style="background:#f1f1f1;padding:10px;margin-top:10px">
+   <p>
+    <?= Html::a('添加参数', ['dcmd-task-cmd-arg/create', 'task_cmd_id' => $model->task_cmd_id], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+   </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -58,12 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn', 'template'=>'{delete}','urlCreator'=>function($action, $model, $key, $index) {if ("delete" == $action) return Url::to(['dcmd-task-cmd-arg/delete', 'id'=>$model['id'], 'task_cmd_id'=>$model['task_cmd_id']]);}, "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
         ],
     ]); ?>
-   <p>
-    <?= Html::a('添加参数', ['dcmd-task-cmd-arg/create', 'task_cmd_id' => $model->task_cmd_id], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-   </p>
 </div>
- <p align="center">  <?= Html::a('创建任务', ['dcmd-task/create-by-cmd', 'task_cmd_id' => $model->task_cmd_id], ['class' => 'btn btn-primary' ]) ?>
- </p>
 
 <button type="button"  onclick="javascript:getTaskScriptContent()" class="btn btn-success">加载</button> &nbsp;&nbsp;
 <?=
@@ -74,7 +77,7 @@ Html::a('点击查看下载(先加载)', '/ducter/app_image/dcmd_task_'.$model['
  <div id="ShellContent" style="margin: 10px 0px 10px 10px; overflow-y: auto; height: auto; overflow-x: hidden">
   <div style=""></div>
  </div>
- </div>
+</div>
 <script>
 var getTaskScriptContent = function () {
          task_cmd="<?php echo $model['task_cmd']; ?>";

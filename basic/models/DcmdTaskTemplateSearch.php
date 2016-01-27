@@ -39,7 +39,7 @@ class DcmdTaskTemplateSearch extends DcmdTaskTemplate
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $pagesize=20)
+    public function search($params)
     {
         ///应用组用户只可查看所在组的应用的模板
         $task_con = "";
@@ -58,7 +58,7 @@ class DcmdTaskTemplateSearch extends DcmdTaskTemplate
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'pagination' => [ 'pagesize' => $pagesize],
+            'pagination' => [ 'pagesize' => 20],
         ]);
 
         if (!($this->load($params) && $this->validate())) {

@@ -32,6 +32,12 @@ $this->params['breadcrumbs'][] = $this->title;
         ]);
     }
    ?>
+    <p>
+        <?= Html::a('添加', ['create'], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+    &nbsp;&nbsp;
+   <?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+    </p>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -42,13 +48,9 @@ $this->params['breadcrumbs'][] = $this->title;
             array('attribute'=>'attr_type', 'label'=>'属性类型', 'filter'=>array(1=>"int", 2=>"float", 3=>"bool", 4=>"char", 5=>"datetime"), 'enableSorting'=>false, 'content'=> function($model, $key, $index, $column) { if($model['attr_type'] == 1) return "int"; if($model['attr_type'] == 2) return "float"; if($model['attr_type'] == 3) return "bool"; if($model['attr_type'] == 4) return "char"; if($model['attr_type'] == 5) return "datetime"; return "";}),
             array('attribute'=>'def_value', 'label'=>'值', 'filter'=>false, 'enableSorting'=>false),
 
-            ['class' => 'yii\grid\ActionColumn',  "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
+            ['class' => 'yii\grid\ActionColumn', 'template'=>'{delete}', "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
         ],
     ]); ?>
-    <p>
-        <?= Html::a('添加', ['create'], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-    &nbsp;&nbsp;
-   <?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-    </p>
+
 </div>
 </form>

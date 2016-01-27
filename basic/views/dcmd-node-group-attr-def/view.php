@@ -30,6 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
         ]);
     }
    ?>
+    <p>
+        <?= Html::a('修改', ['update', 'id' => $model->attr_id], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+    </p>
+
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -41,7 +45,5 @@ $this->params['breadcrumbs'][] = $this->title;
             'ctime:text:创建时间',
         ],
     ]) ?>
-    <p>
-        <?= Html::a('修改', ['update', 'id' => $model->attr_id], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-    </p>
+
 </div>

@@ -8,7 +8,7 @@ use yii\helpers\Html;
 $this->title = '修改用户: ' . ' ' . $model->username;
 $this->params['breadcrumbs'][] = ['label' => '用户列表', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->username, 'url' => ['view', 'id' => $model->uid]];
-$this->params['breadcrumbs'][] = '修改用户信息';
+$this->params['breadcrumbs'][] = 'Update';
 ?>
 <div class="dcmd-user-update">
 

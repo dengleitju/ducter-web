@@ -69,9 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('添加', ['dcmd-service-pool-node/select-node-group', 'app_id'=>$model['app_id'], 'svr_id'=>$model['svr_id'], 'svr_pool_id'=>$model['svr_pool_id']], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1 ) ? "" : "style"=>"display:none"]) ?>
-        <?= Html::a('操作', ['dcmd-service-pool/opr', 'svr_pool_id'=>$svr_pool_id], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1 ) ? "" : "style"=>"display:none"]) ?>
-       <?= Html::a('重复操作', ['dcmd-service-pool/repeat-opr', 'svr_pool_id'=>$svr_pool_id], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1 ) ? "" : "style"=>"display:none"]) ?> 
- 
     </p>
 </div>
 

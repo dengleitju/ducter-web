@@ -73,7 +73,6 @@ echo dirname(__DIR__);exit;
           Yii::$app->getSession()->setFlash('error', "对不起, 你没有权限!");
           return $this->redirect(array('dcmd-app/view', 'id'=>$app_id));
         }
-
         if($model->load(Yii::$app->request->post())) {
           $image_name = Yii::$app->request->post()['DcmdAppArchDiagram']['arch_name'];
           $comment = Yii::$app->request->post()['DcmdAppArchDiagram']['comment'];
@@ -95,6 +94,7 @@ echo dirname(__DIR__);exit;
             Yii::$app->getSession()->setFlash('error', '未选择架构图!');
             return  $this->render('create', ['model' => $model,'app_name'=>$app_query['app_name'],'app_id'=>$app_id,]); 
           }
+          $model = new DcmdAppArchDiagram();
           $model->app_id = $app_id;
           $model->arch_name = $image_name;
           $size = filesize($_FILES['DcmdAppArchDiagram']['tmp_name']['arch_name']);
@@ -116,6 +116,7 @@ echo dirname(__DIR__);exit;
             Yii::$app->getSession()->setFlash('success', '添加成功');
             return $this->redirect(['dcmd-app/view', 'id'=>$app_id]);
           } 
+
           $err_msg = "";
           foreach($model->getErrors() as $item) {
             foreach($item as $k=>$v) $err_msg .=$v." ";

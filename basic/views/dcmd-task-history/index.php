@@ -33,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ]);
     }
    ?>
+   <button  type='submit' class="btn btn-success">删除历史任务</button>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -55,6 +56,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn', 'template'=>'{delete}'],
         ],
     ]); ?>
-    <button  type='submit' class="btn btn-success">批量删除</button>
+
 </div>
 </form>

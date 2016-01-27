@@ -80,7 +80,7 @@ class DcmdTaskNode extends \yii\db\ActiveRecord
       $query = DcmdCenter::findOne(['master'=>1]);
 
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $agent_info = getAgentInfo($host, $port, array($ip), 1);
          if($agent_info->getState() == 0) {
           foreach($agent_info->getAgentinfo() as $agent) {
@@ -111,7 +111,7 @@ class DcmdTaskNode extends \yii\db\ActiveRecord
       /*$query = DcmdCenter::findOne(['master'=>1]);
 
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $agent_info = getTaskOutput($host, $port, $subtask_id, $ip, 0);
          return $agent_info->getErr(); 
        }
@@ -121,7 +121,7 @@ class DcmdTaskNode extends \yii\db\ActiveRecord
   {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $agent_info = getAgentTaskProcess($host, $port, array($subtask_id)); 
          if($agent_info->getState() == 0) {
            foreach($agent_info->getProcess() as $proc) return $proc->getProcess();

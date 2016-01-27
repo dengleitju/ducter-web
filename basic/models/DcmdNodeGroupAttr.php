@@ -32,7 +32,7 @@ class DcmdNodeGroupAttr extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ngroup_id', 'attr_name', 'utime', 'ctime', 'opr_uid'], 'required'],
+            [['ngroup_id', 'attr_name', 'attr_value', 'utime', 'ctime', 'opr_uid'], 'required'],
             [['ngroup_id', 'opr_uid'], 'integer'],
             [['utime', 'ctime'], 'safe'],
             [['attr_name'], 'string', 'max' => 32],

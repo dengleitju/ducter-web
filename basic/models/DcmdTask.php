@@ -49,8 +49,8 @@ class DcmdTask extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['task_name', 'task_cmd', 'depend_task_id', 'depend_task_name', 'app_id', 'app_name', 'svr_id', 'svr_name', 'svr_path', 'tag', 'update_env', 'update_tag', 'state', 'node_multi_pool', 'freeze', 'valid', 'pause', 'concurrent_rate', 'timeout', 'auto', 'process', 'utime', 'ctime', 'opr_uid'], 'required'],
-            [['depend_task_id', 'svr_id', 'update_env', 'update_tag', 'state', 'freeze', 'valid', 'pause', 'concurrent_rate', 'timeout', 'auto', 'process', 'opr_uid', 'node_multi_pool'], 'integer'],
+            [['task_name', 'task_cmd', 'depend_task_id', 'depend_task_name', 'app_id', 'app_name', 'svr_id', 'svr_name', 'svr_path', 'tag', 'update_env', 'update_tag', 'state', 'freeze', 'valid', 'pause', 'concurrent_rate', 'timeout', 'auto', 'process', 'utime', 'ctime', 'opr_uid'], 'required'],
+            [['depend_task_id', 'svr_id', 'update_env', 'update_tag', 'state', 'freeze', 'valid', 'pause', 'concurrent_rate', 'timeout', 'auto', 'process', 'opr_uid'], 'integer'],
             [['task_arg'], 'string'],
             [['utime', 'ctime'], 'safe'],
             [['svr_path'], 'match', 'pattern'=>'/^[a-zA-Z0-9_\/]+$/', 'message'=>'只可包含[a-z,A-Z,0-9,_\/]字符'],

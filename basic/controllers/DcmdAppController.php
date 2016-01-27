@@ -6,8 +6,6 @@ use Yii;
 use app\models\DcmdApp;
 use app\models\DcmdDepartment;
 use app\models\DcmdService;
-use app\models\DcmdServicePool;
-use app\models\DcmdServicePoolNode;
 use app\models\DcmdUserGroup;
 use app\models\DcmdServiceSearch;
 use app\models\DcmdGroup;
@@ -149,35 +147,7 @@ class DcmdAppController extends Controller
              'depart' => $depart,
         ]);
     }
-    public function actionGetAppSvr($id) {
-      $arr = array();
-      ///获取应用命令
-      $dcmd_app = $this->findModel($id);
-      $arr['name'] = $dcmd_app->app_name;
-      $arr['children'] = array();
-      ///获取应用
-      $query = DcmdService::find()->andWhere(['app_id'=>$id])->asArray()->all();
-      foreach($query as $item) {
-        $svr = array();
-        $svr['name'] = $item['svr_name'];
-        $svr['children'] = array();
-        ///获取应用池子
-        $pool = DcmdServicePool::find()->andWhere(['svr_id'=>$item['svr_id']])->asArray()->all();
-        foreach($pool as $p) {
-          $svrp = array();
-          $svrp['name'] = $p['svr_pool'];
-          $svrp['children'] = array();
-          ///获取节点
-          $node = DcmdServicePoolNode::find()->andWhere(['svr_pool_id'=>$p['svr_pool_id']])->asArray()->all();
-          foreach($node as $n) {
-            array_push($svrp['children'], array('name'=>$n['ip']));
-          } 
-          array_push($svr['children'], $svrp);
-        }
-        array_push($arr['children'], $svr);
-      } 
-      return json_encode($arr);
-    }
+
     /**
      * Updates an existing DcmdApp model.
      * If update is successful, the browser will be redirected to the 'view' page.

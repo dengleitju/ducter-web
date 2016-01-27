@@ -173,9 +173,14 @@ class DcmdUserController extends Controller
          }else{
            $model = DcmdUser::findOne(Yii::$app->user->getId());
            $model->passwd = $new_passwd;
-           $this->oprlog(2,"change password user:".$model->username);
-           $model->save();
-           Yii::$app->getSession()->setFlash('success', '密码修改成功!');
+           if( $model->save()) {
+             $this->oprlog(2,"change password user:".$model->username);
+             Yii::$app->getSession()->setFlash('success', "修改成功");
+           }else{
+             $err_str = "";
+             foreach($model->getErrors() as $k=>$v) $err_str.=$k.":".$v[0]."<br>";
+             Yii::$app->getSession()->setFlash('error', "修改失败失败:".$err_str);
+           }
          }
        }
        $model = $this->findModel(Yii::$app->user->getId()); 

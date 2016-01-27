@@ -37,7 +37,7 @@ class DcmdUser extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'passwd', 'sa', 'admin', 'depart_id', 'tel', 'email', 'state', 'comment', 'utime', 'ctime', 'opr_uid'], 'required'],
+            [['username', 'passwd', 'sa', 'admin', 'depart_id', 'opr_uid'], 'required'],
             [['sa', 'admin', 'depart_id', 'state', 'opr_uid'], 'integer'],
             [['utime', 'ctime'], 'safe'],
             [['username', 'tel'], 'string', 'max' => 128],

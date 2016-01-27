@@ -34,6 +34,9 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+<?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"])?>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -45,6 +48,6 @@ $this->params['breadcrumbs'][] = $this->title;
             array('attribute'=>'env_ver','label'=>'环境版本'),
         ],
     ]); ?>
-<?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"])?>
+
 </div>
 </form>

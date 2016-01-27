@@ -9,7 +9,6 @@ use app\models\DcmdTaskServicePool;
 use app\models\DcmdServicePoolNode;
 use app\models\DcmdServicePoolNodeSearch;
 use app\models\DcmdCenter;
-use app\models\DcmdTask;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -69,7 +68,7 @@ class DcmdTaskNodeController extends Controller
           $ret_msg = "";
           $query = DcmdCenter::findOne(['master'=>1]);
           if ($query) {
-            list($host, $port) = explode(':', $query["host"]);
+            list($host, $port) = split(':', $query["host"]);
             var_dump(Yii::$app->request->post());///exit;
             $task_id = Yii::$app->request->post()['task_id'];
             $select = Yii::$app->request->post()['selection'];
@@ -141,7 +140,7 @@ class DcmdTaskNodeController extends Controller
           $ret_msg = "";
           $query = DcmdCenter::findOne(['master'=>1]);
           if ($query) {
-            list($host, $port) = explode(':', $query["host"]);
+            list($host, $port) = split(':', $query["host"]);
             $select = Yii::$app->request->post()['selection'];
             foreach($select as $subtask_id) {
               $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 17, $subtask_id);
@@ -171,12 +170,6 @@ class DcmdTaskNodeController extends Controller
      */
     private function actionView($id)
     {
-        $model = $this->fidModel($id);
-        ///获取该节点上存在的task_id
-        $query = DcmdTaskNode::find()->andWhere(['ip'=>$model->ip])->asArray()->all();
-        $task_con = "task_id in (0,";
-        foreach($query as $item) $task_con .= ",".$item->task_id;
-     
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);

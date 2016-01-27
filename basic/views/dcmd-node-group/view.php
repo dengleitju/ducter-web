@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             array('attribute'=>'ip', 'label' => '服务器IP', 'enableSorting'=>false, 'content'=>function($model, $key, $index, $column) { return Html::a($model['ip'], Url::to(['dcmd-node/view', 'id'=>$model['nid']]));}),
             array('attribute'=>'host', 'label'=>'服务器名', 'filter'=>false, 'enableSorting'=>false),
-            array('attribute'=>'ip', 'label'=>'连接状态','filter'=>false, 'enableSorting'=>false,  'content'=>function($model, $key, $index, $column) { return $model->getAgentState($model['ip']);}),
+            array('attribute'=>'ip', 'label'=>'连接状态','filter'=>false, 'enableSorting'=>false, 'content'=>function($model, $key, $index, $column) { return $model->getAgentState($model['ip']);}),
             array('attribute'=>'did', 'label'=>'设备序列号','filter'=>false, 'enableSorting'=>false),
             array('attribute'=>'sid', 'label'=>'资产序列号', 'filter'=>false, 'enableSorting'=>false),
             array('attribute'=>'online_time', 'label'=>'上线时间', 'filter'=>false, 'enableSorting'=>false),
@@ -73,8 +73,6 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
     <p>
         <?= Html::a('添加', Url::to(['dcmd-node/create', 'ngroup_id'=>$ngroup_id]), ['class' => 'btn btn-success', "target"=>"_blank", (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-        &nbsp;&nbsp;&nbsp;
-        <?= Html::a('导入机器', Url::to(['dcmd-node-group/import-node', 'ngroup_id'=>$ngroup_id]), ['class'=> 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
     </p>
 </div>
 

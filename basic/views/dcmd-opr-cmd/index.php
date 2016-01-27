@@ -33,6 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
     }
    ?>
 
+    <p>
+        <?= Html::a('添加', ['create'], ['class' => 'btn btn-success' , (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+    </p>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -45,7 +49,5 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn', 'template'=>'{delete}', "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
         ],
     ]); ?>
-    <p>
-        <?= Html::a('添加', ['create'], ['class' => 'btn btn-success' , (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-    </p>
+
 </div>

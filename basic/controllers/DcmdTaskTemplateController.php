@@ -114,59 +114,6 @@ class DcmdTaskTemplateController extends Controller
         ]);
     }
 
-    public function actionCreateBySvr($app_id, $svr_id) {
-        ///只有管理员可以
-        if(Yii::$app->user->getIdentity()->admin != 1) {
-          Yii::$app->getSession()->setFlash('success', NULL);
-          Yii::$app->getSession()->setFlash('error', "对不起，你没有权限!");
-          return $this->redirect(array('dcmd-service/view', 'id'=>$svr_id));
-        }
-        ///检查是否为一个系统组
-        $dcmd_app = DcmdApp::findOne($app_id);
-        $temp = DcmdUserGroup::find()->andWhere(['uid'=>Yii::$app->user->getId(), 'gid'=>$dcmd_app->sa_gid])->asArray()->all();;
-        if(count($temp) == 0) {
-          Yii::$app->getSession()->setFlash('success', NULL);
-          Yii::$app->getSession()->setFlash('error', "对不起，你没有权限!");
-          return $this->redirect(array('dcmd-service/view', 'id'=>$svr_id));
-        }
-        $model = new DcmdTaskTemplate();
-        if (Yii::$app->request->post()) { 
-          $model->load(Yii::$app->request->post());
-          $query = DcmdService::findOne($model->svr_id);
-          $model->svr_name = $query['svr_name'];
-          $query = DcmdTaskCmd::findOne($model->task_cmd_id); ////Yii::$app->request->post()['task_cmd_id']);
-          $model->task_cmd = $query['task_cmd'];
-          $model->utime = date('Y-m-d H:i:s');
-          $model->ctime = $model->utime;
-          $model->opr_uid = Yii::$app->user->getId();
-          $arg = array();
-          foreach(Yii::$app->request->post() as $k=>$v) {
-            if(substr($k,0,3) == "Arg") $arg[substr($k,3)] = $v;
-          }
-          $model->task_arg = arrToXml($arg);
-          if($model->save()) {
-            Yii::$app->getSession()->setFlash('success',"添加成功!");
-            $this->oprlog(1, "insert task template:".$model->task_tmpt_name);
-            return $this->redirect(['view', 'id' => $model->task_tmpt_id]);
-          }else {
-            Yii::$app->getSession()->setFlash('error',"添加失败!");
-          }
-        }
-        
-        $dcmd_svr = DcmdService::findOne($svr_id);
-        ///获取任务脚本
-        $query = DcmdTaskCmd::find()->asArray()->all();
-        $task_cmd = array(""=>"");
-        if($query) {
-          foreach($query as $item) $task_cmd[$item['task_cmd_id']] = $item['ui_name'];
-        }
-        return $this->render('create_by_svr', [
-             'model' => $model,
-             'app' => array($app_id=>$dcmd_app->app_name),
-             'svr' => array($svr_id=>$dcmd_svr->svr_name),
-             'task_cmd' => $task_cmd,
-        ]);
-    }
     /**
      * Creates a new DcmdTaskTemplate model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -283,14 +230,14 @@ class DcmdTaskTemplateController extends Controller
          ]);
         
     }
-    
+
     /**
      * Deletes an existing DcmdTaskTemplate model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id, $svr_id=0)
+    public function actionDelete($id)
     {
         ////只有管理员可操作
         if(Yii::$app->user->getIdentity()->admin != 1) {
@@ -303,8 +250,7 @@ class DcmdTaskTemplateController extends Controller
         $this->oprlog(3,"delete task template:".$model->task_tmpt_name);
         $model->delete();
         Yii::$app->getSession()->setFlash('success', '删除成功!');
-        if($svr_id == 0) return $this->redirect(['index']);
-        else return $this->redirect(array('dcmd-service/view', 'id'=>$svr_id));
+        return $this->redirect(['index']);
     }
 
     public function actionGetServices()

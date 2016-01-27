@@ -28,7 +28,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);      
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 16, NULL, NULL, NULL, NULL, $concurrent_rate,
           $timeout, $auto);
          if ($reply->getState() == 0) Yii::$app->getSession()->setFlash('success', '更新成功!');
@@ -185,7 +185,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);      
+         list($host, $port) = split(':', $query["host"]);      
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 1);
          if ($reply->getState() == 0) Yii::$app->getSession()->setFlash('success', '启动成功!');
          else Yii::$app->getSession()->setFlash('error', '启动失败:'.$reply->getErr());
@@ -196,7 +196,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 2);
          if ($reply->getState() == 0) Yii::$app->getSession()->setFlash('success', '停止成功!');
          else Yii::$app->getSession()->setFlash('error', '停止失败:'.$reply->getErr());
@@ -208,7 +208,7 @@ class DcmdTaskAsyncController extends Controller
       $query = DcmdCenter::findOne(['master'=>1]);
       $task = DcmdTask::findOne($task_id);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 16, NULL, NULL, NULL, NULL, $task->concurrent_rate,
           $task->timeout, $task->auto);
          if ($reply->getState() == 0) Yii::$app->getSession()->setFlash('success', '更新成功!');
@@ -220,7 +220,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 10);
          if ($reply->getState() == 0) Yii::$app->getSession()->setFlash('success', '重做成功!');
          else Yii::$app->getSession()->setFlash('error', '重做失败:'.$reply->getErr());
@@ -231,7 +231,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 3);
          if ($reply->getState() == 0) Yii::$app->getSession()->setFlash('success', '继续成功!');
          else Yii::$app->getSession()->setFlash('error', '继续失败:'.$reply->getErr());
@@ -242,7 +242,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 4);
          if ($reply->getState() == 0) Yii::$app->getSession()->setFlash('success', '重试成功!');
          else Yii::$app->getSession()->setFlash('error', '重试失败:'.$reply->getErr());
@@ -253,7 +253,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 14);
          if ($reply->getState() == 0) Yii::$app->getSession()->setFlash('success', '冻结成功!');
          else Yii::$app->getSession()->setFlash('error', '冻结失败:'.$reply->getErr());
@@ -264,7 +264,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 15);
          if ($reply->getState() == 0) Yii::$app->getSession()->setFlash('success', '解冻成功!');
          else Yii::$app->getSession()->setFlash('error', '解冻失败:'.$reply->getErr());
@@ -275,7 +275,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 9, $subtask_id);
          if ($reply->getState() == 0) return "启动成功!";
          else return "启动失败:".$reply->getErr();
@@ -287,7 +287,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 7, $subtask_id);
          if ($reply->getState() == 0) return "终止成功!";
          else return "终止失败:".$reply->getErr();
@@ -299,7 +299,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 12, $subtask_id);
          if ($reply->getState() == 0) return "重做成功!";
          else return "重做失败:".$reply->getErr();
@@ -311,7 +311,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply = execTaskCmd($host, $port, $task_id, Yii::$app->user->getId(), 13, $subtask_id);
          if ($reply->getState() == 0) return "忽略成功!";
          else return "忽略失败:".$reply->getErr();
@@ -336,7 +336,7 @@ class DcmdTaskAsyncController extends Controller
     {
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($host, $port) = explode(':', $query["host"]);
+         list($host, $port) = split(':', $query["host"]);
          $reply =  getTaskOutput($host, $port, $subtask_id, $ip, $os);
          if ($reply->getState() == 0) {
            return '<div id="'.$reply->getOffset().'">'.str_replace("\n", "<br/>",$reply->getResult()).'</div>';

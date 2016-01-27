@@ -201,7 +201,7 @@ class DcmdOprCmdController extends Controller
       $query = DcmdCenter::findOne(['master'=>1]);
       $retcontent = array("md5"=>"",);
       if ($query) {
-          list($ip, $port) = explode(':', $query["host"]);
+          list($ip, $port) = split(':', $query["host"]);
           $reply = getOprScriptInfo($ip, $port, $opr_cmd);
           if ($reply->getState() == 0) {
             $retContent["result"] = str_replace("\n", "<br/>",$reply->getScript());
@@ -240,7 +240,7 @@ class DcmdOprCmdController extends Controller
       if($opr_exec->save()){ 
         $query = DcmdCenter::findOne(['master'=>1]);
         if ($query) {
-          list($ip, $port) = explode(':', $query["host"]);
+          list($ip, $port) = split(':', $query["host"]);
           $reply = execOprCmd($ip, $port, $opr_exec->exec_id);
           if ($reply->getState() == 0) {
             $ret_msg = "State:success<br>Detail:<br>";
@@ -267,7 +267,7 @@ class DcmdOprCmdController extends Controller
       echo json_encode($retContent);
       exit;
     }
-    public function actionRun($opr_cmd_id, $ips="") 
+    public function actionRun($opr_cmd_id) 
     {
       ///判断用户权限
       if(Yii::$app->user->getIdentity()->admin != 1) {
@@ -280,14 +280,12 @@ class DcmdOprCmdController extends Controller
           Yii::$app->getSession()->setFlash('error', '对不起, 你没有权限!');
           return $this->redirect(['dcmd-opr-cmd/index']);
         }
-      }
-       
+      } 
       $opr = $this->findModel($opr_cmd_id);
       $arg = $this->showTaskArg($opr_cmd_id);
       return $this->render('run', [
               'opr' => $opr,
               'arg' => $arg,
-              'ips' => $ips,
       ]); 
     }
     private function showTaskArg($opr_cmd_id)
@@ -316,7 +314,7 @@ class DcmdOprCmdController extends Controller
       $query = DcmdCenter::findOne(['master'=>1]);
       $retContent = "";
       if ($query) {
-          list($ip, $port) = explode(':', $query["host"]);
+          list($ip, $port) = split(':', $query["host"]);
           $reply = getOprScriptList($ip, $port, $prefix);
           if ($reply->getState() == 0) {
             foreach($reply->getScripts() as $item)

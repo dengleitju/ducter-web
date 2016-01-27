@@ -1,5 +1,4 @@
 <?php
-
 function xml_to_array( $xml )
 {//array(1) { ["env"]=> array(2) { ["name"]=> string(2) "gu" ["aa"]=> string(4) "miao" } } 
    $reg = "/<(\\w+)[^>]*?>([\\x00-\\xFF]*?)<\\/\\1>/";

@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <table class="table table-striped table-bordered detail-view"><tr><th width=20%>脚本名称</th><td><?php echo $opr->opr_cmd; ?></td></tr>
 <tr><th>名称名称</th><td><?php echo $opr->ui_name; ?></td></tr>
 <tr><th>运行用户</th><td><?php echo $opr->run_user; ?></td></tr>
-<tr><th>IP(多个ip用;分割)</th><td><input name="ips" type="text" id="ips" class="form-control" type="text" value="<?php echo $ips; ?>" /></td></tr>
+<tr><th>IP(多个ip用;分割)</th><td><input name="ips" type="text" id="ips" class="form-control" type="text" value="" /></td></tr>
 <tr><th>超时</th><td><input name="timeout" type="text" id="timeout" class="form-control" value="<?php echo $opr->timeout; ?>"/></td></tr>
 </table>
 <?php echo $arg; ?>

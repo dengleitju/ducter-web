@@ -24,7 +24,7 @@ class DcmdInvalidAgentController extends Controller
         $query = DcmdCenter::findOne(['master'=>1]);
         $agent = array();
         if ($query) {
-          list($ip, $port) = explode(':', $query["host"]);
+          list($ip, $port) = split(':', $query["host"]);
           $invalidAgent = getInvalidAgent($ip, $port);
           if ($invalidAgent->getState() == 0) {
             $agentInfo = $invalidAgent->getAgentinfo();

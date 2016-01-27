@@ -32,7 +32,7 @@ AppAsset::register($this);
     <div class="wrap" >
         <?php
             NavBar::begin([
-                'brandLabel' => 'Ducter(V1.0.4)',
+                'brandLabel' => 'Ducter',
                 'brandUrl' => "#",///Yii::$app->homeUrl,
                 'options' => [
                     'class' => 'navbar-inverse navbar-fixed-top',
@@ -107,8 +107,8 @@ AppAsset::register($this);
 
     <footer class="footer">
         <div class="container">
-            <p class="pull-left">&copy; Ducter(V1.0.4) <?= date('Y') ?></p>
-            <p class="pull-right">Ducter(V1.0.4)</p>
+            <p class="pull-left">&copy; Ducter <?= date('Y') ?></p>
+            <p class="pull-right">Ducter</p>
         </div>
     </footer>
 

@@ -34,7 +34,11 @@ $this->params['breadcrumbs'][] = $this->title;
     }
     ?>
 
-    <div style="background:#f1f1f1;padding:10px;margin-top:10px">
+
+    <p>
+        <?= Html::a('修改', ['update', 'id' => $model->uid], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1 && Yii::$app->user->getIdentity()->sa == 1) ? "" : "style"=>"display:none"]) ?>
+    </p>
+
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -50,10 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
             array('attribute'=>'opr_uid', 'label'=>'修改者'),
         ],
     ]) ?>
-    <p>
-        <?= Html::a('修改', ['update', 'id' => $model->uid], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1 && Yii::$app->user->getIdentity()->sa == 1) ? "" : "style"=>"display:none"]) ?>
-    </p>
-    </div>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => NULL, ///$searchModel,

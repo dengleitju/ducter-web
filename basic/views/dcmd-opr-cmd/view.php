@@ -55,6 +55,9 @@ if( Yii::$app->getSession()->hasFlash('error') ) {
 </ul>
 
 <div class="dcmd-opr-cmd-view" id="dcmd-opr">
+    <p>
+        <?= Html::a('修改', ['update', 'id' => $model->opr_cmd_id], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+    </p>
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -68,10 +71,10 @@ if( Yii::$app->getSession()->hasFlash('error') ) {
             'ctime:text:修改时间',
         ],
     ]) ?>
+
     <p>
-        <?= Html::a('修改', ['update', 'id' => $model->opr_cmd_id], ['class' => 'btn btn-primary', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-    </p>
-    <p align="center">
+        <?= Html::a('添加', ['dcmd-opr-cmd-arg/create', 'opr_cmd_id'=>$model['opr_cmd_id']], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+        &nbsp;&nbsp;&nbsp;
         <?= Html::a('执行', ['run', 'opr_cmd_id'=>$model['opr_cmd_id']], ['class' => 'btn btn-success']) ?>
     </p>
     <?= GridView::widget([
@@ -82,11 +85,12 @@ if( Yii::$app->getSession()->hasFlash('error') ) {
             array('attribute'=>'optional', 'label'=>'是否可选',  'filter'=>false, 'enableSorting'=>false, 'content'=>function($model, $key, $index, $colum) { if($model['optional'] == 0) return "否"; return  "是";}),
 
             ['class' => 'yii\grid\ActionColumn', 'template'=>'{delete}','urlCreator'=>function($action, $model, $key, $index) {if ("delete" == $action) return Url::to(['dcmd-opr-cmd-arg/delete', 'id'=>$model['id'], 'opr_cmd_id'=>$model['opr_cmd_id']]);}, "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
+
         ],
     ]); ?>
-<?= Html::a('添加', ['dcmd-opr-cmd-arg/create', 'opr_cmd_id'=>$model['opr_cmd_id']], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-<p align="center"><input type="submmit" class="btn btn-success" value="加载" onclick="javascript:getOprScriptContent()"/>
-</p>
+
+<button type="button"  onclick="javascript:getOprScriptContent()" class="btn btn-success">加载</button>
+
 <div style="height: auto; width: 800px; background-color: #000; color: #FFF; padding: 10px 3px 10px 10px">
  操作脚本内容:
  <div id="ShellContent" style="margin: 10px 0px 10px 10px; overflow-y: auto; height: auto; overflow-x: hidden">
@@ -94,6 +98,7 @@ if( Yii::$app->getSession()->hasFlash('error') ) {
  </div>
 </div>
 </div> 
+
 
 <div class="dcmd-group-cmd-index"  id="dcmd-opr-group" style="display:none">
     <?= GridView::widget([

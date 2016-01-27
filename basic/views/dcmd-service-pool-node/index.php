@@ -11,14 +11,6 @@ use yii\bootstrap\Alert;
 $this->title = '服务池设备';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<script>
-function opr() {
-  $("#w0").attr("action", "/ducter/index.php?r=dcmd-service-pool-node/opr");
-}
-function repeatopr() {
-  $("#w0").attr("action", "/ducter/index.php?r=dcmd-service-pool-node/repeat-opr");
-}
-</script>
 <form id="w0" action="/ducter/index.php?r=dcmd-service-pool-node/delete-all" method="post">
 <div class="dcmd-service-pool-node-index">
 
@@ -42,6 +34,7 @@ function repeatopr() {
     }
     ?>
 
+<?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"])?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -55,8 +48,6 @@ function repeatopr() {
             ['class' => 'yii\grid\ActionColumn', 'template'=>'{delete}', "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
         ],
     ]); ?>
-        <?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"])?>&nbsp;&nbsp;
-        <?= Html::submitButton('操作', ['class' =>'btn btn-success', 'onClick'=>"opr()", (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?> &nbsp;&nbsp;
-        <?= Html::submitButton('重复操作', ['class' =>'btn btn-success', 'onClick'=>"repeatopr()", (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+
 </div>
 </form>

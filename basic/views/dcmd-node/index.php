@@ -16,12 +16,6 @@ $this->params['breadcrumbs'][] = $this->title;
 function convert() {
   $("#w0").attr("action", "/ducter/index.php?r=dcmd-node/convert");
 }
-function opr() {
-  $("#w0").attr("action", "/ducter/index.php?r=dcmd-node/opr");
-}
-function repeatopr() {
-  $("#w0").attr("action", "/ducter/index.php?r=dcmd-node/repeat-opr");
-}
 </script>
 <form id="w0" action="/ducter/index.php?r=dcmd-node/delete-all" method="post">
 <div class="dcmd-node-index">
@@ -45,6 +39,11 @@ function repeatopr() {
         ]);
     }
    ?>
+    <p>
+        <?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?> &nbsp;&nbsp;
+        <?= Html::submitButton('变更设备池', ['class' =>'btn btn-success', 'onClick'=>"convert()", (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+    </p>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -57,15 +56,9 @@ function repeatopr() {
             array('attribute'=>'did', 'label'=>'设备序列号', 'enableSorting'=>false),
             array('attribute'=>'sid', 'label'=>'资产序列号', 'enableSorting'=>false),
             array('attribute'=>'online_time', 'label'=>'上线时间', 'enableSorting'=>false),
-            ['class' => 'yii\grid\ActionColumn', "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
+            ['class' => 'yii\grid\ActionColumn', 'template'=>'{delete}', "visible"=>(Yii::$app->user->getIdentity()->admin == 1) ? true : false],
         ],
     ]); ?>
-    <p>
-        <?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?> &nbsp;&nbsp;
-        <?= Html::submitButton('变更设备池', ['class' =>'btn btn-success', 'onClick'=>"convert()", (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?> &nbsp;&nbsp;
-        <?= Html::submitButton('操作', ['class' =>'btn btn-success', 'onClick'=>"opr()", (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?> &nbsp;&nbsp;
-        <?= Html::submitButton('重复操作', ['class' =>'btn btn-success', 'onClick'=>"repeatopr()", (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
-    </p>
 
 </div>
 </form>

@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -43,9 +44,9 @@ $this->params['breadcrumbs'][] = $this->title;
             array('attribute'=>'svr_alias', 'label'=>'服务别名','content' => function($model, $key, $index, $column) { return Html::a($model['svr_alias'], Url::to(['view', 'id'=>$model['svr_id']]));}),
             array('attribute'=>'app_id', 'label'=>'产品名称', 'enableSorting'=>false, 'filter'=>$app, 'content' => function($model, $key, $index, $column) { return Html::a($model->getAppName($model['app_id']), Url::to(['dcmd-app/view', 'id'=>$model['app_id']]));}),
             array('attribute'=>'app_id', 'label'=>'产品别名', 'filter'=>false, 'enableSorting'=>false, 'content' => function($model, $key, $index, $column) { return Html::a($model->getAppAlias($model['app_id']), Url::to(['dcmd-app/view', 'id'=>$model['app_id']]));}),
-            ['class' => 'yii\grid\ActionColumn',"visible"=>(Yii::$app->user->getIdentity()->admin == 1 ) ? true : false],
+            ['class' => 'yii\grid\ActionColumn', 'template'=>'{delete}',"visible"=>(Yii::$app->user->getIdentity()->admin == 1 ) ? true : false],
         ],
     ]); ?>
-    <?= Html::submitButton('删除', ['class' =>'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1) ? "" : "style"=>"display:none"]) ?>
+
 </div>
 </form>

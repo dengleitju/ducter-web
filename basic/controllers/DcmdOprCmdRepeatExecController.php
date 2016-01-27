@@ -23,7 +23,6 @@ include dirname(__FILE__)."/../common/interface.php";
  */
 class DcmdOprCmdRepeatExecController extends Controller
 {
-    public $enableCsrfValidation = false;
     public function behaviors()
     {
         return [
@@ -275,7 +274,7 @@ class DcmdOprCmdRepeatExecController extends Controller
       $content .= "</table>";
       return $content;
     }
-    public function actionRun($id, $ips="")
+    public function actionRun($id)
     {
       ///判断用户权限
       if(Yii::$app->user->getIdentity()->admin != 1) {
@@ -293,7 +292,6 @@ class DcmdOprCmdRepeatExecController extends Controller
       $change = true;
       if($opr->arg_mutable == "0") $change = false;
       $arg = $this->getArg($opr->arg, $change, $opr->opr_cmd);
-      if($opr->ip_mutable == "1" && $ips != "") $opr->ip=$ips;
       return $this->render('run', [
               'opr' => $opr,
               'arg' => $arg,
@@ -320,7 +318,7 @@ class DcmdOprCmdRepeatExecController extends Controller
       $retcontent = array();
       $query = DcmdCenter::findOne(['master'=>1]);
       if ($query) {
-         list($ip, $port) = explode(':', $query["host"]);
+         list($ip, $port) = split(':', $query["host"]);
          $reply = execRepeatOprCmd($ip, $port, $repeat_cmd_name, $args, $ips);
          if ($reply->getState() == 0) {
             $ret_msg = "State:success<br>Detail:<br>";

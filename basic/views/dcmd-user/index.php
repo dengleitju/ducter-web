@@ -35,6 +35,10 @@ $this->params['breadcrumbs'][] = $this->title;
     }
     ?>
 
+    <p>
+        <?= Html::a('添加', ['create'], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1 && Yii::$app->user->getIdentity()->sa == 1) ? "" : "style"=>"display:none"]) ?>
+   </p>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -45,10 +49,8 @@ $this->params['breadcrumbs'][] = $this->title;
             array('attribute'=>'sa', 'label'=>'admin', 'enableSorting'=>false, 'filter'=>array(1=>"是", 0=>"否"), 'content'=>function($model, $key, $index, $column) { if($model['sa'] == 1) return "是"; return "否";}),
             array('attribute'=>'depart_id', 'label'=>'部门', 'filter'=>false,'enableSorting'=>false, 'value'=>function($model, $key, $index, $colum) {return $model->getDepartment($model['depart_id']);}),
             array('attribute'=>'tel', 'filter'=>false, 'enableSorting'=>false),
-            ['class' => 'yii\grid\ActionColumn',  "visible"=>(Yii::$app->user->getIdentity()->admin == 1 && Yii::$app->user->getIdentity()->sa == 1) ? true : false, ],
+            ['class' => 'yii\grid\ActionColumn', 'template'=>'{delete}', "visible"=>(Yii::$app->user->getIdentity()->admin == 1 && Yii::$app->user->getIdentity()->sa == 1) ? true : false, ],
         ],
     ]); ?>
-    <p>
-        <?= Html::a('添加', ['create'], ['class' => 'btn btn-success', (Yii::$app->user->getIdentity()->admin == 1 && Yii::$app->user->getIdentity()->sa == 1) ? "" : "style"=>"display:none"]) ?>
-   </p>
+
 </div>
