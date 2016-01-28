@@ -188,12 +188,13 @@ class DcmdNodeController extends Controller
          if ($model->save()) {
            $this->oprlog(1,"insert node:".$ip);
            Yii::$app->getSession()->setFlash('success', "添加成功");
-           /*$query = DcmdCenter::findOne(['master'=>1]);
+
+           $query = DcmdCenter::findOne(['master'=>1]);
            if ($query) {
              list($host, $port) = split(':', $query["host"]);
-             $reply = agentValid($host, $port, $ip);
-              Yii::$app->getSession()->setFlash('success', $reply);
-           }*/
+             $reply = agentValid($host, $port, $model->ip);
+             # Yii::$app->getSession()->setFlash('success', $reply);
+           }
            return $this->redirect(['dcmd-node/view', 'id' => $model->nid]);
          }else 
             Yii::$app->getSession()->setFlash('error', '添加失败');
